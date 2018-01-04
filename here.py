@@ -61,7 +61,7 @@ def places_lst_constructor(results, number_of_places):
 	for x in range(0, number_of_places):
 		target_place = results[x]
 		rating = None
-		if target_place.has_key("averageRating"):
+		if "averageRating" in target_place:
 			rating = target_place.get("averageRating")
 		places.append(Place(target_place["title"], target_place["position"][0], target_place["position"][1], rating))
 	return places
@@ -122,6 +122,11 @@ def center_circle_constructor(starting_place, destination):
 	result = "" + str(degrees(mid_latitude)) + "," + str(degrees(mid_longitude)) + ";" + "r=" + str(radius)
 	return result 
 
+def four_category_lists(choices_list, number_of_places, at_bool, at_val, starting_place, destination):
+	for category in choices_list:
+		lst = search_query(category, number_of_places, at_bool, at_val, center_circle_constructor(starting_place, destination))
+		for x in range(0, number_of_places):
+			print(lst[x].get_name())
 
 
 """ 
@@ -164,9 +169,19 @@ print(center_circle_constructor(place1, place2))
 # print(title)
 # print(latitude)
 
-place1 = Place("Seattle", 47.608013, -122.335167, None)
-place2 = Place("San Francisco", 37.773972, -122.431297, None)
-place3 = Place("Los Angeles", 34.052235, -118.243683, None)
-lst = search_query("Museum", 20, False, "47.608013,-122.335167", center_circle_constructor(place3, place2))
-for x in range(0,20):
-	print(lst[x].get_name())
+# place1 = Place("Seattle", 47.608013, -122.335167, None)
+# place2 = Place("San Francisco", 37.773972, -122.431297, None)
+# place3 = Place("Los Angeles", 34.052235, -118.243683, None)
+
+# choices = ['Museum', 'Restaurant', 'Retail', 'Leisure-outdoors']
+
+# for category in choices:
+# 	lst = search_query(category, 20, False, "47.608013,-122.335167", center_circle_constructor(place2, place1))
+# 	for x in range(0,20):
+# 		print(lst[x].get_name())
+
+# lst = search_query("Museum", 20, False, "47.608013,-122.335167", center_circle_constructor(place2, place1))
+# for x in range(0,20):
+# 	print(lst[x].get_name())
+
+
