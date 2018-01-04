@@ -11,6 +11,7 @@ class Place:
 		self.latitude = lat
 		self.longitude = lon
 		self.rating = rating
+		self.has_review = false
 	
 	def get_name(self):
 		return self.name;
@@ -30,6 +31,9 @@ class Place:
 		starting_longitude = radians(float(self.longitude))
 		ending_longitude = radians(float(destination.get_longitude()))
 		return 6371.01 * acos(sin(starting_latitude) * sin(ending_latitude) + cos(starting_latitude) * cos(ending_latitude) * cos(starting_longitude - ending_longitude))
+
+	def get_has_review(self):
+		return self.has_review
 
 def query_header_constructor(query, at_bool, at_val, in_val):
 	"""Generates a dictionary named headers which stores a common set of parameters for the get requests in search_query, autosuggest_query, and explore_query"""
@@ -61,7 +65,7 @@ def places_lst_constructor(results, number_of_places):
 	for x in range(0, number_of_places):
 		target_place = results[x]
 		rating = None
-		if target_place.has_key("averageRating"):
+		if "averageRating" in target_place:
 			rating = target_place.get("averageRating")
 		places.append(Place(target_place["title"], target_place["position"][0], target_place["position"][1], rating))
 	return places
@@ -122,7 +126,21 @@ def center_circle_constructor(starting_place, destination):
 	result = "" + str(degrees(mid_latitude)) + "," + str(degrees(mid_longitude)) + ";" + "r=" + str(radius)
 	return result 
 
-
+def yelp_api_call(term, latitude, longitude):
+	#API Key = GMeB-1KoNJ0XvhlOn9VFe4GPRCIWMusT-B-dwIYVSb0oG22RXFiUoBxz3gNvq4dTX2LenL6HWQwXoyLs9oJyFOIPWGFLRkPpKXo1KfCnENimVObU_vKl1clzLYZNWnYx
+	url = "https://api.yelp.com/v3/businesses/search"
+	headers = {
+        'Authorization': 'Bearer GMeB-1KoNJ0XvhlOn9VFe4GPRCIWMusT-B-dwIYVSb0oG22RXFiUoBxz3gNvq4dTX2LenL6HWQwXoyLs9oJyFOIPWGFLRkPpKXo1KfCnENimVObU_vKl1clzLYZNWnYx',
+	}
+	url_params = {
+        'term': term.replace(' ', '+'),
+        'latitude': latitude,
+        'longitude': longitude,
+        'limit': 10
+    }
+	response = requests.request('GET', url, headers=headers, params=url_params)
+	s = json.loads(response.text)
+	return s.get("businesses")
 
 """ 
 # Test for autosuggest_query
@@ -164,9 +182,11 @@ print(center_circle_constructor(place1, place2))
 # print(title)
 # print(latitude)
 
-place1 = Place("Seattle", 47.608013, -122.335167, None)
-place2 = Place("San Francisco", 37.773972, -122.431297, None)
-place3 = Place("Los Angeles", 34.052235, -118.243683, None)
-lst = search_query("Museum", 20, False, "47.608013,-122.335167", center_circle_constructor(place3, place2))
-for x in range(0,20):
-	print(lst[x].get_name())
+# place1 = Place("Seattle", 47.608013, -122.335167, None)
+# place2 = Place("San Francisco", 37.773972, -122.431297, None)
+# place3 = Place("Los Angeles", 34.052235, -118.243683, None)
+# lst = search_query("Museum", 20, False, "47.608013,-122.335167", center_circle_constructor(place3, place2))
+# for x in range(0,20):
+# 	print(lst[x].get_name())
+yelp_api_call("Intersection for the Arts", 37.76577, -122.42197)
+# "https://api.yelp.com/v3/businesses/search"37.77828, -122.42926
