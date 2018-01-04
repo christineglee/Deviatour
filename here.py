@@ -2,6 +2,9 @@ import requests
 import json
 from math import radians, sin, cos, acos, atan2, sqrt, degrees
 
+#API Key = GMeB-1KoNJ0XvhlOn9VFe4GPRCIWMusT-B-dwIYVSb0oG22RXFiUoBxz3gNvq4dTX2LenL6HWQwXoyLs9oJyFOIPWGFLRkPpKXo1KfCnENimVObU_vKl1clzLYZNWnYx
+#client ID = OkyFz7f00cpLklJ7lzfEHg
+
 class Place:
 	def __init__(self, name, lat, lon, rating):
 		self.name = name
@@ -35,11 +38,12 @@ def query_header_constructor(query, at_bool, at_val, in_val):
 	headers = dict()
 	headers["app_id"] = APP_ID
 	headers["app_code"] = APP_CODE
-	headers["q"] = query
+	if query is not None:
+		headers["q"] = query
 	if at_bool:
 		headers["at"] = at_val
-	else:
-		headers["in"] = in_val
+	# else:
+	# 	headers["in"] = in_val
 	return headers
 
 def query_url_constructor(entrypoint):
@@ -57,8 +61,8 @@ def places_lst_constructor(results, number_of_places):
 	for x in range(0, number_of_places):
 		target_place = results[x]
 		rating = None
-		if target_place.has_key(rating):
-			rating = target_place.get(rating)
+		if target_place.has_key("averageRating"):
+			rating = target_place.get("averageRating")
 		places.append(Place(target_place["title"], target_place["position"][0], target_place["position"][1], rating))
 	return places
 
@@ -66,8 +70,10 @@ def search_query(query, number_of_places, at_bool, at_val, in_val):
 	"""Does a search query(Nokia Here Places API) and returns a list of places"""
 	url = query_url_constructor("/discover/search")
 	headers = query_header_constructor(query, at_bool, at_val, in_val)
+	headers["route"] = "[37.773972,-122.431297|34.052235,-118.243683]"
 	r = requests.get(url, params=headers)
 	s = json.loads(r.text)
+	print(s)
 	results = s["results"]
 	results = results["items"]
 	return places_lst_constructor(results, number_of_places)
@@ -86,11 +92,16 @@ def explore_query(query, number_of_places, at_bool, at_val, in_val):
 	#Not fully functional, currently not parsing all of results
 	url = query_url_constructor("/discover/explore")
 	headers = query_header_constructor(query, at_bool, at_val, in_val)
+	headers["cat"] = "eat-drink, sights-museums"
+	print(headers)
+	print("HEADERS ABOVE HERE")
 	r = requests.get(url, params=headers)
 	s = json.loads(r.text)
+	print(s)
 	results = s["results"]
 	results = results["items"]
-	return places_lst_constructor(results, number_of_places)
+	# print(results)`
+	# return places_lst_constructor(results, number_of_places)
 
 
 # def geobox_constructor(starting_place, destination):
@@ -155,4 +166,7 @@ print(center_circle_constructor(place1, place2))
 
 place1 = Place("Seattle", 47.608013, -122.335167, None)
 place2 = Place("San Francisco", 37.773972, -122.431297, None)
-print(center_circle_constructor(place1, place2))
+place3 = Place("Los Angeles", 34.052235, -118.243683, None)
+lst = search_query("Museum", 20, False, "47.608013,-122.335167", center_circle_constructor(place3, place2))
+for x in range(0,20):
+	print(lst[x].get_name())
