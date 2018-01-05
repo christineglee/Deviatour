@@ -1,6 +1,7 @@
 import requests
 import json
 from math import radians, sin, cos, acos, atan2, sqrt, degrees
+from operator import methodcaller
 
 #API Key = GMeB-1KoNJ0XvhlOn9VFe4GPRCIWMusT-B-dwIYVSb0oG22RXFiUoBxz3gNvq4dTX2LenL6HWQwXoyLs9oJyFOIPWGFLRkPpKXo1KfCnENimVObU_vKl1clzLYZNWnYx
 #client ID = OkyFz7f00cpLklJ7lzfEHg
@@ -154,7 +155,8 @@ def yelp_api_call(term, latitude, longitude):
 	s = json.loads(response.text)
 	return s.get("businesses")
 
-def yelp_api_call_set_rating(term, latitude, longitude):
+def yelp_api_set_rating(term, latitude, longitude):
+	#uses yelp api to get a place's rating
 	url = "https://api.yelp.com/v3/businesses/search"
 	headers = {
         'Authorization': 'Bearer GMeB-1KoNJ0XvhlOn9VFe4GPRCIWMusT-B-dwIYVSb0oG22RXFiUoBxz3gNvq4dTX2LenL6HWQwXoyLs9oJyFOIPWGFLRkPpKXo1KfCnENimVObU_vKl1clzLYZNWnYx',
@@ -172,19 +174,43 @@ def yelp_api_call_set_rating(term, latitude, longitude):
 			rating = place['rating']
 			return rating
 	return "Place has no rating"
-lst_places = list()
-for place in lst_places:
-	rating = yelp_api_call_set_rating(place.get_name(), place.get_latitude, place.get_longitude)
-	if type(rating) is not str:
-		place.set_rating(rating)
-yelp_api_call_set_rating("Intersection for the Arts", 37.76577, -122.42197)
+
+def place_ranker(lst_places):
+	new_lst = sorted(lst_places, key=methodcaller('get_rating'))[::-1]
+	to_return = []
+	for place in new_lst:
+		to_return.append(place.get_name())
+	for item in to_return:
+		print(item)
+	return to_return
+
+
+place1 = Place("Seattle", 47.608013, -122.335167, 5.0)
+place2 = Place("San Francisco", 37.773972, -122.431297, 5.2)
+place3 = Place("Los Angeles", 34.052235, -118.243683, 5.0)
+
+place_ranker([place1, place2, place3])
 
 
 
 
-# place1 = Place("Seattle", 47.608013, -122.335167, None)
-# place2 = Place("San Francisco", 37.773972, -122.431297, None)
-# place3 = Place("Los Angeles", 34.052235, -118.243683, None)
+
+
+
+#to set rating in place class
+# lst_places = list()
+# for place in lst_places:
+# 	rating = yelp_api_set_rating(place.get_name(), place.get_latitude, place.get_longitude)
+# 	if type(rating) is not str:
+# 		place.set_rating(rating)
+
+
+
+
+
+place1 = Place("Seattle", 47.608013, -122.335167, 5.0)
+place2 = Place("San Francisco", 37.773972, -122.431297, 5.2)
+place3 = Place("Los Angeles", 34.052235, -118.243683, 5.0)
 
 #Test for four_category_lists
 
@@ -203,41 +229,41 @@ yelp_api_call_set_rating("Intersection for the Arts", 37.76577, -122.42197)
 
 
 
-"""1/4 Search Query + Finding Places + Routing API"""
+# """1/4 Search Query + Finding Places + Routing API"""
 
 
 
-""" 
-# Test for autosuggest_query
-place_lst = autosuggest_query("chrysler", 3, True, "40.74917,-73.98529", None)
-first_place = place_lst[1]
-title = first_place.get_name()
-latitude = first_place.get_latitude()
-longitude = first_place.get_longitude()
+# """ 
+# # Test for autosuggest_query
+# place_lst = autosuggest_query("chrysler", 3, True, "40.74917,-73.98529", None)
+# first_place = place_lst[1]
+# title = first_place.get_name()
+# latitude = first_place.get_latitude()
+# longitude = first_place.get_longitude()
 
-print(title)
-print(latitude)
-print(longitude) 
-"""
+# print(title)
+# print(latitude)
+# print(longitude) 
+# """
 
-"""
-# Test for search_query
-place_lst = search_query("chrysler", 3, True, "40.74917,-73.98529", None)
-first_place = place_lst[1]
-title = first_place.get_name()
-latitude = first_place.get_latitude()
-longitude = first_place.get_longitude()
+# """
+# # Test for search_query
+# place_lst = search_query("chrysler", 3, True, "40.74917,-73.98529", None)
+# first_place = place_lst[1]
+# title = first_place.get_name()
+# latitude = first_place.get_latitude()
+# longitude = first_place.get_longitude()
 
-print(title)
-print(latitude)
-print(longitude)
-"""
-"""
-# Test for center_circle_constructor
-place1 = Place("Seattle", 47.608013, -122.335167, None)
-place2 = Place("San Francisco", 37.773972, -122.431297, None)
-print(center_circle_constructor(place1, place2))
-"""
+# print(title)
+# print(latitude)
+# print(longitude)
+# """
+# """
+# # Test for center_circle_constructor
+# place1 = Place("Seattle", 47.608013, -122.335167, None)
+# place2 = Place("San Francisco", 37.773972, -122.431297, None)
+# print(center_circle_constructor(place1, place2))
+# """
 # place_lst = search_query("chrysler", 3, True, "40.74917,-73.98529", None)
 # first_place = place_lst[1]
 # title = first_place.get_name()
