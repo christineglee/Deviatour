@@ -75,11 +75,13 @@ def places_lst_constructor(results, number_of_places):
 		places.append(Place(target_place["title"], target_place["position"][0], target_place["position"][1], rating))
 	return places
 
-def search_query(query, number_of_places, at_bool, at_val, in_val):
+#fixing route
+def search_query(query, number_of_places, at_bool, at_val, in_val, lat1, lon1, lat2, lon2):
 	"""Does a search query(Nokia Here Places API) and returns a list of places"""
 	url = query_url_constructor("/discover/search")
 	headers = query_header_constructor(query, at_bool, at_val, in_val)
-	headers["route"] = "[37.773972,-122.431297|34.052235,-118.243683]"
+	headers["route"] = "[" + str(lat1) + "," + str(lon1) + "|" + str(lat2) + "," + str(lon2) + "];w=100000" 
+	print(headers)
 	r = requests.get(url, params=headers)
 	s = json.loads(r.text)
 	print(s)
@@ -131,6 +133,19 @@ def center_circle_constructor(starting_place, destination):
 	result = "" + str(degrees(mid_latitude)) + "," + str(degrees(mid_longitude)) + ";" + "r=" + str(radius)
 	return result 
 
+place1 = Place("Seattle", 47.608013, -122.335167, None)
+place2 = Place("San Francisco", 37.773972, -122.431297, None)
+place3 = Place("Los Angeles", 34.052235, -118.243683, None)
+
+#Test for four_category_lists
+lst = search_query_route("Museum", 3, False, "47.608013,-122.335167", center_circle_constructor(place2, place1), 37.773972, -122.431297, 34.052235, -118.243683)
+for x in range(0,3):
+	print(lst[x].get_name())
+
+# lst = search_query("Museum", 3, False, "47.608013,-122.335167", center_circle_constructor(place2, place1))
+# for x in range(0,3):
+# 	print(lst[x].get_name())
+
 
 def four_category_lists(choices_list, number_of_places, at_bool, at_val, starting_place, destination):
 	for category in choices_list:
@@ -175,29 +190,22 @@ def yelp_api_set_rating(term, latitude, longitude):
 			return rating
 	return "Place has no rating"
 
+#ranks places to visit based on ratings
 def place_ranker(lst_places):
 	new_lst = sorted(lst_places, key=methodcaller('get_rating'))[::-1]
 	to_return = []
 	for place in new_lst:
 		to_return.append(place.get_name())
-	for item in to_return:
-		print(item)
 	return to_return
 
-
-place1 = Place("Seattle", 47.608013, -122.335167, 5.0)
-place2 = Place("San Francisco", 37.773972, -122.431297, 5.2)
-place3 = Place("Los Angeles", 34.052235, -118.243683, 5.0)
-
-place_ranker([place1, place2, place3])
-
+#place ranker test cases
+# place1 = Place("Seattle", 47.608013, -122.335167, 5.0)
+# place2 = Place("San Francisco", 37.773972, -122.431297, 5.2)
+# place3 = Place("Los Angeles", 34.052235, -118.243683, 5.0)
+# place_ranker([place1, place2, place3])
 
 
-
-
-
-
-#to set rating in place class
+#to set rating in place class(USE LATER)
 # lst_places = list()
 # for place in lst_places:
 # 	rating = yelp_api_set_rating(place.get_name(), place.get_latitude, place.get_longitude)
@@ -205,12 +213,6 @@ place_ranker([place1, place2, place3])
 # 		place.set_rating(rating)
 
 
-
-
-
-place1 = Place("Seattle", 47.608013, -122.335167, 5.0)
-place2 = Place("San Francisco", 37.773972, -122.431297, 5.2)
-place3 = Place("Los Angeles", 34.052235, -118.243683, 5.0)
 
 #Test for four_category_lists
 
