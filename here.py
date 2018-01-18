@@ -1,6 +1,7 @@
 import requests
 import json
 from math import radians, sin, cos, acos, atan2, sqrt, degrees
+from operator import methodcaller
 
 #API Key = GMeB-1KoNJ0XvhlOn9VFe4GPRCIWMusT-B-dwIYVSb0oG22RXFiUoBxz3gNvq4dTX2LenL6HWQwXoyLs9oJyFOIPWGFLRkPpKXo1KfCnENimVObU_vKl1clzLYZNWnYx
 #client ID = OkyFz7f00cpLklJ7lzfEHg
@@ -11,7 +12,7 @@ class Place:
 		self.latitude = lat
 		self.longitude = lon
 		self.rating = rating
-		self.has_review = False
+		self.has_rating = False
 	
 	def get_name(self):
 		return self.name;
@@ -25,6 +26,10 @@ class Place:
 	def get_rating(self):
 		return self.rating
 
+	def set_rating(self, rating):
+		self.rating = rating
+		self.has_rating = True
+
 	def get_distance(self, destination):
 		starting_latitude = radians(float(self.latitude))
 		ending_latitude = radians(float(destination.get_latitude()))
@@ -32,8 +37,8 @@ class Place:
 		ending_longitude = radians(float(destination.get_longitude()))
 		return 6371.01 * acos(sin(starting_latitude) * sin(ending_latitude) + cos(starting_latitude) * cos(ending_latitude) * cos(starting_longitude - ending_longitude))
 
-	def get_has_review(self):
-		return self.has_review
+	def get_has_rating(self):
+		return self.has_rating
 
 def query_header_constructor(query, at_bool, at_val, in_val):
 	"""Generates a dictionary named headers which stores a common set of parameters for the get requests in search_query, autosuggest_query, and explore_query"""
@@ -70,11 +75,13 @@ def places_lst_constructor(results, number_of_places):
 		places.append(Place(target_place["title"], target_place["position"][0], target_place["position"][1], rating))
 	return places
 
-def search_query(query, number_of_places, at_bool, at_val, in_val):
+#fixing route
+def search_query(query, number_of_places, at_bool, at_val, in_val, lat1, lon1, lat2, lon2):
 	"""Does a search query(Nokia Here Places API) and returns a list of places"""
 	url = query_url_constructor("/discover/search")
 	headers = query_header_constructor(query, at_bool, at_val, in_val)
-	headers["route"] = "[35.9312740448,-120.288200892|34.052235,-118.243683];w=100000"
+	headers["route"] = "[" + str(lat1) + "," + str(lon1) + "|" + str(lat2) + "," + str(lon2) + "];w=100000" 
+	print(headers)
 	r = requests.get(url, params=headers)
 	s = json.loads(r.text)
 	print(s)
@@ -126,7 +133,28 @@ def center_circle_constructor(starting_place, destination):
 	result = "" + str(degrees(mid_latitude)) + "," + str(degrees(mid_longitude)) + ";" + "r=" + str(radius)
 	return result 
 
-def yelp_search_api_call(term, latitude, longitude):
+place1 = Place("Seattle", 47.608013, -122.335167, None)
+place2 = Place("San Francisco", 37.773972, -122.431297, None)
+place3 = Place("Los Angeles", 34.052235, -118.243683, None)
+
+#Test for four_category_lists
+lst = search_query_route("Museum", 3, False, "47.608013,-122.335167", center_circle_constructor(place2, place1), 37.773972, -122.431297, 34.052235, -118.243683)
+for x in range(0,3):
+	print(lst[x].get_name())
+
+# lst = search_query("Museum", 3, False, "47.608013,-122.335167", center_circle_constructor(place2, place1))
+# for x in range(0,3):
+# 	print(lst[x].get_name())
+
+
+def four_category_lists(choices_list, number_of_places, at_bool, at_val, starting_place, destination):
+	for category in choices_list:
+		lst = search_query(category, number_of_places, at_bool, at_val, center_circle_constructor(starting_place, destination))
+		for x in range(0, number_of_places):
+			print(lst[x].get_name())
+
+
+def yelp_api_call(term, latitude, longitude):
 	#API Key = GMeB-1KoNJ0XvhlOn9VFe4GPRCIWMusT-B-dwIYVSb0oG22RXFiUoBxz3gNvq4dTX2LenL6HWQwXoyLs9oJyFOIPWGFLRkPpKXo1KfCnENimVObU_vKl1clzLYZNWnYx
 	url = "https://api.yelp.com/v3/businesses/search"
 	headers = {
@@ -142,37 +170,86 @@ def yelp_search_api_call(term, latitude, longitude):
 	s = json.loads(response.text)
 	return s.get("businesses")
 
-""" 
-# Test for autosuggest_query
-place_lst = autosuggest_query("chrysler", 3, True, "40.74917,-73.98529", None)
-first_place = place_lst[1]
-title = first_place.get_name()
-latitude = first_place.get_latitude()
-longitude = first_place.get_longitude()
+def yelp_api_set_rating(term, latitude, longitude):
+	#uses yelp api to get a place's rating
+	url = "https://api.yelp.com/v3/businesses/search"
+	headers = {
+        'Authorization': 'Bearer GMeB-1KoNJ0XvhlOn9VFe4GPRCIWMusT-B-dwIYVSb0oG22RXFiUoBxz3gNvq4dTX2LenL6HWQwXoyLs9oJyFOIPWGFLRkPpKXo1KfCnENimVObU_vKl1clzLYZNWnYx',
+	}
+	url_params = {
+        'term': term.replace(' ', '+'),
+        'latitude': latitude,
+        'longitude': longitude,
+        'limit': 10
+    }
+	response = requests.request('GET', url, headers=headers, params=url_params)
+	s = json.loads(response.text)
+	for place in s['businesses']:
+		if place['name'] == term:
+			rating = place['rating']
+			return rating
+	return "Place has no rating"
 
-print(title)
-print(latitude)
-print(longitude) 
-"""
+#ranks places to visit based on ratings
+def place_ranker(lst_places):
+	new_lst = sorted(lst_places, key=methodcaller('get_rating'))[::-1]
+	to_return = []
+	for place in new_lst:
+		to_return.append(place.get_name())
+	return to_return
 
-"""
-# Test for search_query
-place_lst = search_query("chrysler", 3, True, "40.74917,-73.98529", None)
-first_place = place_lst[1]
-title = first_place.get_name()
-latitude = first_place.get_latitude()
-longitude = first_place.get_longitude()
+#place ranker test cases
+# place1 = Place("Seattle", 47.608013, -122.335167, 5.0)
+# place2 = Place("San Francisco", 37.773972, -122.431297, 5.2)
+# place3 = Place("Los Angeles", 34.052235, -118.243683, 5.0)
+# place_ranker([place1, place2, place3])
 
-print(title)
-print(latitude)
-print(longitude)
-"""
-"""
-# Test for center_circle_constructor
-place1 = Place("Seattle", 47.608013, -122.335167, None)
-place2 = Place("San Francisco", 37.773972, -122.431297, None)
-print(center_circle_constructor(place1, place2))
-"""
+
+#to set rating in place class(USE LATER)
+# lst_places = list()
+# for place in lst_places:
+# 	rating = yelp_api_set_rating(place.get_name(), place.get_latitude, place.get_longitude)
+# 	if type(rating) is not str:
+# 		place.set_rating(rating)
+
+
+
+#Test for four_category_lists
+
+# choices = ['Museum', 'Restaurant', 'Retail', 'Leisure-outdoors']
+# choice_places = []
+# #for category in choices:
+# lst = search_query('Museum', 20, False, "47.608013,-122.335167", center_circle_constructor(place2, place1))
+# for x in range(0,3):
+# 	lst1.append(lst[x].get_name())
+# for place in choice_places:
+# 	place.set_rating = yelp_api_call_rating(place.get_name, place.get_latitude, place.get_longitude)
+
+
+
+
+
+
+
+# """1/4 Search Query + Finding Places + Routing API"""
+
+
+
+# """ 
+# # Test for autosuggest_query
+# place_lst = autosuggest_query("chrysler", 3, True, "40.74917,-73.98529", None)
+# first_place = place_lst[1]
+# title = first_place.get_name()
+# latitude = first_place.get_latitude()
+# longitude = first_place.get_longitude()
+
+# print(title)
+# print(latitude)
+# print(longitude) 
+# """
+
+# """
+# # Test for search_query
 # place_lst = search_query("chrysler", 3, True, "40.74917,-73.98529", None)
 # first_place = place_lst[1]
 # title = first_place.get_name()
@@ -181,13 +258,44 @@ print(center_circle_constructor(place1, place2))
 
 # print(title)
 # print(latitude)
+# print(longitude)
+# """
+# """
+# # Test for center_circle_constructor
+# place1 = Place("Seattle", 47.608013, -122.335167, None)
+# place2 = Place("San Francisco", 37.773972, -122.431297, None)
+# print(center_circle_constructor(place1, place2))
+# """
+# place_lst = search_query("chrysler", 3, True, "40.74917,-73.98529", None)
+# first_place = place_lst[1]
+# title = first_place.get_name()
+# latitude = first_place.get_latitude()
+# longitude = first_place.get_longitude()
 
-place1 = Place("Seattle", 47.608013, -122.335167, None)
-place2 = Place("San Francisco", 37.773972, -122.431297, None)
-place3 = Place("Los Angeles", 34.052235, -118.243683, None)
-print(center_circle_constructor(place3, place2))
-lst = search_query("Museum", 50, False, "47.608013,-122.335167", center_circle_constructor(place3, place2))
-for x in range(0,len(lst)):
-	print(lst[x].get_name())
-# yelp_api_call("Intersection for the Arts", 37.76577, -122.42197)
-# "https://api.yelp.com/v3/businesses/search"37.77828, -122.42926
+# print(title)
+# print(latitude)
+# place1 = Place("Seattle", 47.608013, -122.335167, None)
+# place2 = Place("San Francisco", 37.773972, -122.431297, None)
+# place3 = Place("Los Angeles", 34.052235, -118.243683, None)
+
+# #Test for four_category_lists
+
+# choices = ['Museum', 'Restaurant', 'Retail', 'Leisure-outdoors']
+
+
+# for category in choices:
+# 	lst = search_query(category, 20, False, "47.608013,-122.335167", center_circle_constructor(place2, place1))
+# 	for x in range(0,20):
+# 		print(lst[x].get_name())
+
+# lst = search_query("Museum", 20, False, "47.608013,-122.335167", center_circle_constructor(place2, place1))
+# for x in range(0,20):
+# 	print(lst[x].get_name())
+
+
+# lst = search_query("Museum", 20, False, "47.608013,-122.335167", center_circle_constructor(place3, place2))
+# for x in range(0,20):
+# 	print(lst[x].get_name())
+#print(yelp_api_call("Intersection for the Arts", 37.76577, -122.42197))
+#"https://api.yelp.com/v3/businesses/search"37.77828, -122.42926
+
