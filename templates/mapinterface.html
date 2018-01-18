@@ -1,0 +1,98 @@
+<style>
+.boxed {
+	margin: 5 auto;
+	padding: 5px;
+	text-align: center;
+	background-color: transparent;
+    font-size: 20;
+    color: black;
+    border: 5px solid black;
+    border-radius: 10px;
+	width: 45%;
+    height: 45%;
+    border-color: #357EC7;
+} 
+.mapbutton {
+	font-size: 12;
+	background-color: transparent;
+	border-radius: 5px;
+	font-family: Trebuchet MS, Helvetica, sans-serif;
+	margin-bottom: 5px;
+}
+.yelpseemore {
+	font-size: 12;
+	font-family: Trebuchet MS, Helvetica, sans-serif;
+
+}
+.yelpstars {
+	padding-right: 10px;
+}
+.reviewstext {
+	color: gray;
+	font-size: 9;
+}
+.placename {
+	font-family: Trebuchet MS, Helvetica, sans-serif;
+}
+.review {
+	font-size: 12px;
+	width: 215px;
+	height: 215px;
+	overflow: hidden;
+}
+.yelpburst{
+	height: 5%;
+}
+.background{
+	font-family: Trebuchet MS, Helvetica, sans-serif;
+	margin: 0;
+	background: #fffff0;
+}
+</style>
+<div class="background">
+<div class="boxed">{{place1_name}} <img class="yelpburst" src="/static/Yelp Burst/Screen/Yelp_burst_positive_RGB.png"><div><img class="review" src="{{place1_image}}"></div>
+<p class="reviewstext">
+<img class="yelpstars" src="{{place1_stars}}"> Based on {{place1_review_num}} Reviews
+</p>
+<div>
+	<button class="mapbutton" type="button">Add Place</button>
+</div>
+	<a class="yelpseemore" href="{{place1_url}}"> Learn More!</a>
+</div>
+<div class="boxed">{{place2_name}} <img class="yelpburst" src="/static/Yelp Burst/Screen/Yelp_burst_positive_RGB.png"><div><img class="review" src="{{place2_image}}"></div>
+<p class="reviewstext">
+<img class="yelpstars" src="{{place2_stars}}"> Based on {{place2_review_num}} Reviews
+</p>
+<div>
+	<button class="mapbutton" type="button">Add Place</button>
+</div>
+	<a class="yelpseemore" href="{{place1_url}}"> Learn More!</a>
+</div>
+<div class="boxed">{{place3_name}} <img class="yelpburst" src="/static/Yelp Burst/Screen/Yelp_burst_positive_RGB.png"><div><img class="review" src="{{place3_image}}"></div>
+<p class="reviewstext">
+<img class="yelpstars" src="{{place3_stars}}"> Based on {{place3_review_num}} Reviews
+</p>
+<div>
+	<button class="mapbutton" type="button">Add Place</button>
+</div>
+	<a class="yelpseemore" href="{{place1_url}}"> Learn More!</a>
+</div>
+<div class="boxed">{{place4_name}} <img class="yelpburst" src="/static/Yelp Burst/Screen/Yelp_burst_positive_RGB.png"><div><img class="review" src="{{place4_image}}"></div>
+<p class="reviewstext">
+<img class="yelpstars" src="{{place4_stars}}"> Based on {{place4_review_num}} Reviews
+</p>
+<div>
+	<button class="mapbutton" type="button">Add Place</button>
+</div>
+	<a class="yelpseemore" href="{{place1_url}}"> Learn More!</a>
+</div>
+<div class="boxed">{{place5_name}} <img class="yelpburst" src="/static/Yelp Burst/Screen/Yelp_burst_positive_RGB.png"><div><img class="review" src="{{place5_image}}"></div>
+<p class="reviewstext">
+<img class="yelpstars" src="{{place5_stars}}"> Based on {{place5_review_num}} Reviews
+</p>
+<div>
+	<button class="mapbutton" type="button">Add Place</button>
+</div>
+	<a class="yelpseemore" href="{{place1_url}}"> Learn More!</a>
+</div>
+</div>

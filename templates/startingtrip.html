@@ -1,0 +1,123 @@
+<meta name="viewport" content="width = device-width, initial-scale = 1">
+<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css">
+<style>
+label {
+  margin-top: 0.5em;
+  margin-bottom: 0.25em;
+}
+/*.container1{
+}*/
+/*.container2 {
+  background-color: #fffff0;
+  margin: 0 auto;
+}
+.textbox {
+    font-family: Trebuchet MS, Helvetica, sans-serif;
+    font-size: 16;
+    float: none;
+    border-radius: 5px;
+    border-color: black;
+    width: 10%;
+    background-color: transparent;
+    margin: .2rem 0 0;
+    padding: 0 1.1rem;
+    height: 40;
+    border-style: solid;
+}
+.labelone {
+  color: #357EC7; 
+  font-family: Trebuchet MS, Helvetica, sans-serif;
+  font-size: 20;"
+}
+.labeltwo {
+  color: black; 
+  font-family: Trebuchet MS, Helvetica, sans-serif;
+  font-size: 20;"
+}
+.pagetitle{
+  font-color: black;
+  font-size: 30;
+}*/
+</style>
+<html class="container2">
+  <head>
+    <title>Welcome to DeviaTour!</title>
+   <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <br><br>
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12">
+              <center><h1>Where can we take you?</h1></center>
+            </div>
+          </div>
+          <form method="post" action="{{ url_for('submitted_form') }}">
+          <div class="row">
+            <div class="col-md-12">
+              <label for="place1">Depature Point</label>
+              <input type="text" class="form-control" id="place1" name="place1" placeholder="San Francisco">
+            </div>
+            <div class="col-md-6">
+              <label for="lat1">Latitude</label>
+              <input type="text" class="form-control" name="lat1" placeholder="37.773972"San Francisco" >
+            </div>
+            <div class="col-md-6">
+              <label for="lon1">Longitude</label>
+              <input type="text" class="form-control" name="lon1" placeholder="-122.431297">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-12">
+              <label for="place2">Destination</label>
+              <input type="text" class="form-control" name="place2" placeholder="Seattle">
+            </div>
+            <div class="col-md-6">
+              <label for="lat2">Latitude</label>
+              <input type="text" class="form-control" name="lat2" placeholder="47.608013">
+            </div>
+            <div class="col-md-6">
+              <label for="lon2">Longitude</label>
+              <input type="text" class="form-control" name="lon2" placeholder="-122.335167">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="cat1" name="cat1" value="restaurant">
+                <label class="custom-control-label" for="cat1">Restaurant</label>
+              </div>
+            </div>
+          </div>
+              <!-- <input type="checkbox" class="form-control" name="cat2" value="going-out"> Going Out<br>
+              <input type="checkbox" class="form-control" name="cat3" value="sights-museums"> Museum<br>
+              <input type="checkbox" class="form-control" name="cat4" value="shopping"> Shopping<br>
+              <input type="checkbox" class="form-control" name="cat5" value="leisure-outdoor"> Outdoor Leisure<br>
+              <input type="checkbox" class="form-control" name="cat6" value="natural-geographical"> Nature<br> -->  
+          <br>        
+          <div class="row">
+            <div class="col-md-12">
+              <input type="submit" class="btn btn-block btn-primary">
+            </div>
+          </div> 
+          </form>
+        </div>
+      </div>
+    </div>
+
+        
+          
+          
+        </div>
+        </form>
+      </div>
+    </div>
+  </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</html>

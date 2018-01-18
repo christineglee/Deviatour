@@ -11,7 +11,7 @@ class Place:
 		self.latitude = lat
 		self.longitude = lon
 		self.rating = rating
-		self.has_review = false
+		self.has_review = False
 	
 	def get_name(self):
 		return self.name;
@@ -62,7 +62,7 @@ def query_url_constructor(entrypoint):
 def places_lst_constructor(results, number_of_places):
 	"""Takes in the results of a previous query and returns a list of Places with a size equal to the number of places requested"""
 	places = []
-	for x in range(0, number_of_places):
+	for x in range(0, min(number_of_places, len(results))):
 		target_place = results[x]
 		rating = None
 		if "averageRating" in target_place:
@@ -74,7 +74,7 @@ def search_query(query, number_of_places, at_bool, at_val, in_val):
 	"""Does a search query(Nokia Here Places API) and returns a list of places"""
 	url = query_url_constructor("/discover/search")
 	headers = query_header_constructor(query, at_bool, at_val, in_val)
-	headers["route"] = "[37.773972,-122.431297|34.052235,-118.243683]"
+	headers["route"] = "[35.9312740448,-120.288200892|34.052235,-118.243683];w=100000"
 	r = requests.get(url, params=headers)
 	s = json.loads(r.text)
 	print(s)
@@ -126,7 +126,7 @@ def center_circle_constructor(starting_place, destination):
 	result = "" + str(degrees(mid_latitude)) + "," + str(degrees(mid_longitude)) + ";" + "r=" + str(radius)
 	return result 
 
-def yelp_api_call(term, latitude, longitude):
+def yelp_search_api_call(term, latitude, longitude):
 	#API Key = GMeB-1KoNJ0XvhlOn9VFe4GPRCIWMusT-B-dwIYVSb0oG22RXFiUoBxz3gNvq4dTX2LenL6HWQwXoyLs9oJyFOIPWGFLRkPpKXo1KfCnENimVObU_vKl1clzLYZNWnYx
 	url = "https://api.yelp.com/v3/businesses/search"
 	headers = {
@@ -182,11 +182,12 @@ print(center_circle_constructor(place1, place2))
 # print(title)
 # print(latitude)
 
-# place1 = Place("Seattle", 47.608013, -122.335167, None)
-# place2 = Place("San Francisco", 37.773972, -122.431297, None)
-# place3 = Place("Los Angeles", 34.052235, -118.243683, None)
-# lst = search_query("Museum", 20, False, "47.608013,-122.335167", center_circle_constructor(place3, place2))
-# for x in range(0,20):
-# 	print(lst[x].get_name())
-yelp_api_call("Intersection for the Arts", 37.76577, -122.42197)
+place1 = Place("Seattle", 47.608013, -122.335167, None)
+place2 = Place("San Francisco", 37.773972, -122.431297, None)
+place3 = Place("Los Angeles", 34.052235, -118.243683, None)
+print(center_circle_constructor(place3, place2))
+lst = search_query("Museum", 50, False, "47.608013,-122.335167", center_circle_constructor(place3, place2))
+for x in range(0,len(lst)):
+	print(lst[x].get_name())
+# yelp_api_call("Intersection for the Arts", 37.76577, -122.42197)
 # "https://api.yelp.com/v3/businesses/search"37.77828, -122.42926
