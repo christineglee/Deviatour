@@ -1,31 +1,40 @@
 <html>
+<style>
+.col-md-6 {
+  margin: 5 auto;
+}
+h1 {
+  text-align: center;
+}
+</style>
  <head>
-   <title>Submitted form</title>
-   <link rel="stylesheet" type="text/css" href="/static/style.css">
+  <title>Confirm Information</title>
+  <meta name="viewport" content="width = device-width, initial-scale = 1">
+  <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css">
  </head>
  <body>
-   <div class="container">
-     <div class="pagetitle">
-       <h1>Form submitted</h1>
-     </div>
-     <div id="main">
-       <p>Thanks for your submission!</p>
-       <p>Here's a review of the information:</p>
-       <p>
-          <strong>Departure Point</strong>: {{place1}} <br>
-          <strong>Latitude</strong>: {{lat1}} <br>
-          <strong>Longitude</strong>: {{lon1}} <br>
-          <strong>Destination</strong>: {{place2}} <br>
-          <strong>Latitude</strong>: {{lat2}} <br>
-          <strong>Longitude</strong>: {{lon2}} <br>
-          <strong>Categories</strong>: {{cat1}} {{cat2}} {{cat3}} {{cat4}} <br>
+  <div id="container">
+    <div class="row">
+      <div class="col-md-6">
+      <h1>Thanks for your submission</h1>
+       <div id="main">
+         <p>Here's a review of the information:</p>
+         <p>
+            <strong>Departure Point</strong>: {{place1}} <br>
+            <strong>Latitude</strong>: {{lat1}} <br>
+            <strong>Longitude</strong>: {{lon1}} <br>
+            <strong>Destination</strong>: {{place2}} <br>
+            <strong>Latitude</strong>: {{lat2}} <br>
+            <strong>Longitude</strong>: {{lon2}} <br>
+            <strong>Categories</strong>: {{cat1}} {{cat2}} {{cat3}} {{cat4}} <br>
 
-          </p>
-       <form method="post" action="{{ url_for('first_map') }}">
-        <input type="submit">
-       </form>
+            </p>
 
-
+            <form method="post" action="{{ url_for('first_map') }}">
+          <input type="submit" class="btn btn-block btn-primary">
+         </form>
+        </div>
+      </div>
      </div>
    </div>
  </body>
