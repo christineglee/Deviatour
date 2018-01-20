@@ -67,7 +67,7 @@ def query_url_constructor(entrypoint):
 def places_lst_constructor(results, number_of_places):
 	"""Takes in the results of a previous query and returns a list of Places with a size equal to the number of places requested"""
 	places = []
-	for x in range(0, number_of_places):
+	for x in range(0, min(number_of_places, len(results))):
 		target_place = results[x]
 		rating = None
 		if "averageRating" in target_place:
@@ -263,7 +263,6 @@ place_ranker([place1, place2, place3])
 
 # print(title)
 # print(latitude)
-
 # place1 = Place("Seattle", 47.608013, -122.335167, None)
 # place2 = Place("San Francisco", 37.773972, -122.431297, None)
 # place3 = Place("Los Angeles", 34.052235, -118.243683, None)
@@ -288,5 +287,4 @@ place_ranker([place1, place2, place3])
 # 	print(lst[x].get_name())
 #print(yelp_api_call("Intersection for the Arts", 37.76577, -122.42197))
 #"https://api.yelp.com/v3/businesses/search"37.77828, -122.42926
-
 
