@@ -131,21 +131,7 @@ def center_circle_constructor(starting_place, destination):
 	radius = starting_place.get_distance(destination) / 2
 
 	result = "" + str(degrees(mid_latitude)) + "," + str(degrees(mid_longitude)) + ";" + "r=" + str(radius)
-	return result 
-
-place1 = Place("Seattle", 47.608013, -122.335167, None)
-place2 = Place("San Francisco", 37.773972, -122.431297, None)
-place3 = Place("Los Angeles", 34.052235, -118.243683, None)
-
-#Test for four_category_lists
-lst = search_query_route("Museum", 3, False, "47.608013,-122.335167", center_circle_constructor(place2, place1), 37.773972, -122.431297, 34.052235, -118.243683)
-for x in range(0,3):
-	print(lst[x].get_name())
-
-# lst = search_query("Museum", 3, False, "47.608013,-122.335167", center_circle_constructor(place2, place1))
-# for x in range(0,3):
-# 	print(lst[x].get_name())
-
+	return result
 
 def four_category_lists(choices_list, number_of_places, at_bool, at_val, starting_place, destination):
 	for category in choices_list:
@@ -184,6 +170,7 @@ def yelp_api_set_rating(term, latitude, longitude):
     }
 	response = requests.request('GET', url, headers=headers, params=url_params)
 	s = json.loads(response.text)
+	print(s)
 	for place in s['businesses']:
 		if place['name'] == term:
 			rating = place['rating']
@@ -199,18 +186,20 @@ def place_ranker(lst_places):
 	return to_return
 
 #place ranker test cases
-# place1 = Place("Seattle", 47.608013, -122.335167, 5.0)
-# place2 = Place("San Francisco", 37.773972, -122.431297, 5.2)
-# place3 = Place("Los Angeles", 34.052235, -118.243683, 5.0)
-# place_ranker([place1, place2, place3])
+place1 = Place("Seattle", 47.608013, -122.335167, 5.0)
+place2 = Place("San Francisco", 37.773972, -122.431297, 5.2)
+place3 = Place("Los Angeles", 34.052235, -118.243683, 5.0)
+place_ranker([place1, place2, place3])
 
 
 #to set rating in place class(USE LATER)
-# lst_places = list()
-# for place in lst_places:
-# 	rating = yelp_api_set_rating(place.get_name(), place.get_latitude, place.get_longitude)
-# 	if type(rating) is not str:
-# 		place.set_rating(rating)
+lst_places = [place1, place2, place3]
+for place in lst_places:
+	rating = yelp_api_set_rating(place.get_name(), place.get_latitude(), place.get_longitude())
+	if type(rating) is not str:
+		place.set_rating(rating)
+
+place_ranker([place1, place2, place3])
 
 
 
