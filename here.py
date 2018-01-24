@@ -224,8 +224,8 @@ place_ranker([place1, place2, place3])
 
 
 
-# """ 
-# # Test for autosuggest_query
+
+# Test for autosuggest_query
 # place_lst = autosuggest_query("chrysler", 3, True, "40.74917,-73.98529", None)
 # first_place = place_lst[1]
 # title = first_place.get_name()
@@ -235,7 +235,7 @@ place_ranker([place1, place2, place3])
 # print(title)
 # print(latitude)
 # print(longitude) 
-# """
+
 
 # """
 # # Test for search_query
@@ -282,9 +282,8 @@ place_ranker([place1, place2, place3])
 # 	print(lst[x].get_name())
 
 
-# lst = search_query("Museum", 20, False, "47.608013,-122.335167", center_circle_constructor(place3, place2))
-# for x in range(0,20):
-# 	print(lst[x].get_name())
+lst = search_query("Museum", 20, False, 47.608013, -122.335167, 47.608013, -122.335167, 37.773972, -122.431297)
+for x in range(0,3):
+	print(lst[x].get_name())
 #print(yelp_api_call("Intersection for the Arts", 37.76577, -122.42197))
-#"https://api.yelp.com/v3/businesses/search"37.77828, -122.42926
 

@@ -258,6 +258,28 @@ def place_ranker(lst_places):
 		to_return.append(place.get_name())
 	return to_return
 
+def get_lat_lng(input_address):
+
+    GOOGLE_MAPS_API_URL = 'http://maps.googleapis.com/maps/api/geocode/json'
+    params = {
+        'address': input_address
+    }
+    req = requests.get(GOOGLE_MAPS_API_URL, params=params)
+    res = req.json()
+    print(res)
+
+    # Use the first result
+    result = res['results'][0]
+
+    geodata = dict()
+    geodata['lat'] = result['geometry']['location']['lat']
+    geodata['lng'] = result['geometry']['location']['lng']
+    geodata['address'] = result['formatted_address']
+    input_address_lat = geodata['lat']
+    input_address_lng = geodata['lng']
+    return input_address_lat, input_address_lng
+
+
 @app.route('/')
 def welcome_to_deviatour():
     return render_template('startingtrip.html')
@@ -274,23 +296,21 @@ def submitted_form():
     global category1
     global place_lst
     place1 = request.form['place1']
-    lat1 = request.form['lat1']
-    lon1 = request.form['lon1']
+    lat1, lon1 = get_lat_lng(place1)
     place2 = request.form['place2']
-    lat2 = request.form['lat2']
-    lon2 = request.form['lon2']
+    lat2, lon2 = get_lat_lng(place2)
     cat_lst = []
-    if request.form.has_key('cat1') and len(cat_lst) < 4:
+    if 'cat1' in request.form and len(cat_lst) < 4:
         cat_lst.append(request.form['cat1'])
-    if request.form.has_key('cat2') and len(cat_lst) < 4:
+    if 'cat2' in request.form and len(cat_lst) < 4:
         cat_lst.append(request.form['cat2'])
-    if request.form.has_key('cat3') and len(cat_lst) < 4:
+    if 'cat3' in request.form and len(cat_lst) < 4:
         cat_lst.append(request.form['cat3'])
-    if request.form.has_key('cat4') and len(cat_lst) < 4:
+    if 'cat4' in request.form and len(cat_lst) < 4:
         cat_lst.append(request.form['cat4'])
-    if request.form.has_key('cat5') and len(cat_lst) < 4:
+    if 'cat5' in request.form and len(cat_lst) < 4:
         cat_lst.append(request.form['cat5'])
-    if request.form.has_key('cat6') and len(cat_lst) < 4:
+    if 'cat6' in request.form and len(cat_lst) < 4:
         cat_lst.append(request.form['cat6'])
     if(len(cat_lst) < 4):
         cat_lst = cat_lst + ["","","",""]
